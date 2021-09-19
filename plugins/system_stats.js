@@ -5,8 +5,11 @@ WhatsAsena - Yusuf Usta
 Developer & Co-Founder - Phaticusthiccy
 */
 
-const Asena = require('../events');
+const Asena = require("../Utilis/events");
 const {MessageType} = require('@adiwajshing/baileys');
+const { checkImAdmin } = require("../Utilis/Misc");
+const { warn, getEachWarn } = require("../Utilis/warn");
+const { getBuffer } = require("../Utilis/download");
 const {spawnSync} = require('child_process');
 const Config = require('../config');
 const chalk = require('chalk');
@@ -14,6 +17,7 @@ const axios = require('axios');
 
 const Language = require('../language');
 const Lang = Language.getString('system_stats');
+let wk = true;
 
 
 if (Config.WORKTYPE == 'private') {
@@ -35,7 +39,7 @@ if (Config.WORKTYPE == 'private') {
 }
 else if (Config.WORKTYPE == 'public') {
 
-   Asena.addCommand({pattern: 'alive', fromMe: false, desc: Lang.ALIVE_DESC}, (async (message, match) => {
+   Asena.addCommand({pattern: 'alive', fromMe: wk, desc: Lang.ALIVE_DESC}, (async (message, match) => {
         
         let pp
         try { pp = await message.client.getProfilePicture(message.jid.includes('-') ? message.data.participant : message.jid ); } catch { pp = await message.client.getProfilePicture(); }
@@ -50,7 +54,7 @@ else if (Config.WORKTYPE == 'public') {
         );
     }));
     
-    Asena.addCommand({pattern: 'psysd', fromMe: true, desc: Lang.SYSD_DESC, dontAddCommandList: true }, (async (message, match) => {
+    Asena.addCommand({pattern: 'psysd', fromMe: wk, desc: Lang.SYSD_DESC, dontAddCommandList: true }, (async (message, match) => {
 
         const child = spawnSync('neofetch', ['--stdout']).stdout.toString('utf-8')
         await message.sendMessage(
@@ -59,7 +63,7 @@ else if (Config.WORKTYPE == 'public') {
     }));
 
     Asena.addCommand(
-  { pattern: "warn ?(.*)", fromMe: fm, desc: "To warn", onlyGroup: true },
+  { pattern: "warn ?(.*)", fromMe: wk, desc: "To warn", onlyGroup: true },
   async (message, match) => {
     if (match == 'list') {
       let msg = '';
